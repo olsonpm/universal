@@ -1,0 +1,14 @@
+{
+  "name": "universal",
+  "version": "0.1.0",
+  "description": "Provides accessors to both global and window properties without worrying about reference errors",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "phil olson",
+  "license": "ISC",
+  "dependencies": {
+    "ramda": "^0.22.1"
+  }
+}
