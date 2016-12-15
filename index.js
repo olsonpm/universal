@@ -13,6 +13,8 @@ const r = require('ramda');
 //------//
 
 const apply = createApply()
+  , bind = createBind()
+  , converge = createConverge()
   , getProp = createGetProp()
   , invokePropWith = createInvokePropWith()
   ;
@@ -55,7 +57,13 @@ function createGetProp() {
 function createInvokePropWith() {
   return r.curry(
     (type, path, args) => r.pipe(
-      r.path(path)
+      converge(
+        bind
+        , [
+          r.path(path)
+          , r.path(r.init(path))
+        ]
+      )
       , apply(r.__, args)
     )(universal[type])
   );
@@ -66,6 +74,23 @@ function createApply() {
     (fn, args) => (r.is(Function, fn))
       ? fn.apply(null, args)
       : undefined
+  );
+}
+
+function createBind() {
+  return r.curry(
+    (fn, thisObj) => (r.is(Function, fn))
+      ? fn.bind(thisObj)
+      : undefined
+  );
+}
+
+function createConverge() {
+  return r.curry(
+    (fn, fnArr, arg) => r.pipe(
+      r.map(apply(r.__, [arg]))
+      , apply(fn)
+    )(fnArr)
   );
 }
 
