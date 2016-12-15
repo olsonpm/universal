@@ -15,9 +15,13 @@ const r = require('ramda');
 const apply = createApply()
   , bind = createBind()
   , converge = createConverge()
+  , emptyObj = {}
   , getProp = createGetProp()
   , invokePropWith = createInvokePropWith()
+  , noop = () => void 0
+  , setProp = createSetProp()
   ;
+
 
 
 //------//
@@ -29,18 +33,20 @@ const universal = {
   , getWindowProp: getProp('window')
   , invokeGlobalPropWith: invokePropWith('global')
   , invokeWindowPropWith: invokePropWith('window')
+  , setGlobalProp: setProp('global')
+  , setWindowProp: setProp('window')
 };
 
 try {
   universal.global = global;
 } catch (e) {
-  universal.global = {};
+  universal.global = emptyObj;
 }
 
 try {
   universal.window = window;
 } catch (e) {
-  universal.window = {};
+  universal.window = emptyObj;
 }
 
 
@@ -51,6 +57,14 @@ try {
 function createGetProp() {
   return r.curry(
     (type, path) => r.path(path, universal[type])
+  );
+}
+
+function createSetProp() {
+  return r.curry(
+    (type, path, val) => (universal[type] === emptyObj)
+      ? noop
+      : r.assocPath(path, val, universal[type])
   );
 }
 

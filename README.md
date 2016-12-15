@@ -44,6 +44,9 @@ console.log(nodeEnv);
    1) an array of strings which constitute the path to the property.
    2) an array of arguments applied to the property
 
+ *Note: this method is a noop when called in the incorrect context.  e.g.
+   `invokeGlobalPropWith` in the browser does nothing*
+
 ```js
 // router.js
 import universal from 'universal';
@@ -51,4 +54,22 @@ import universal from 'universal';
 universal.invokeWindowPropWith(['location', 'replace'], ['https://www.google.com']);
 // calls "window.location.replace('https://www.google.com')" which on the node
 //   environment won't do anything and its function will return undefined.
+```
+
+### setWindowProp() and setGlobalProp()
+ - both functions take two arguments.
+   1) an array of strings which constitute the path to the property.
+   2) an value to set the property to
+ - returns undefined
+
+*Note: this method is a noop when called in the incorrect context.  e.g.
+  `setGlobalProp` in the browser does nothing*
+
+```js
+// router.js
+import universal from 'universal';
+
+universal.setWindowProp(['document', 'onmousemove'], event => { /* do something */ });
+// In a browser this sets "window.document.onmousemove" to the following
+//   function.  In a node environment, nothing is set.
 ```
